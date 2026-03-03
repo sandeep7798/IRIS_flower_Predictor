@@ -5,4 +5,4 @@ tensorflow
 flask
 scikit-learn
 joblib
-mlflow
+gunicorn
