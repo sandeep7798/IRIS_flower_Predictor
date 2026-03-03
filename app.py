@@ -3,6 +3,7 @@ import numpy as np
 from tensorflow.keras.models import load_model
 from sklearn.preprocessing import StandardScaler
 from sklearn.datasets import load_iris
+import os
 
 app = Flask(__name__)
 
@@ -40,9 +41,12 @@ def predict():
 
         return render_template("result.html", prediction=result)
 
-    except:
+    except Exception as e:
+        print("Error:", e)
         return render_template("result.html", prediction="Invalid Input")
 
 
+# Only needed for local testing
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))  # Render sets $PORT
+    app.run(host="0.0.0.0", port=port, debug=False)
