@@ -1,0 +1,26 @@
+# Virtual Environment
+
+Include/
+Lib/
+Scripts/
+pyvenv.cfg
+
+# Python cache files
+
+**pycache**/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+
+build/
+dist/
+*.egg-info/
+
+# VS Code
+
+.vscode/
+
+# Environment variables
+
+.env
