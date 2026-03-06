@@ -6,47 +6,51 @@
 
 ```
 <style>
-    body {
+
+    body{
         font-family: Arial;
-        background: #f4f6f9;
-        text-align: center;
-        padding: 40px;
+        background:#f4f6f9;
+        text-align:center;
+        padding:40px;
     }
 
     .container{
-        background: white;
-        padding: 30px;
-        border-radius: 10px;
-        width: 400px;
-        margin: auto;
-        box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        background:white;
+        padding:30px;
+        border-radius:10px;
+        width:400px;
+        margin:auto;
+        box-shadow:0 0 10px rgba(0,0,0,0.2);
     }
 
     input{
-        width: 90%;
-        padding: 8px;
-        margin: 8px;
+        width:90%;
+        padding:10px;
+        margin:8px;
+        border-radius:5px;
+        border:1px solid #ccc;
     }
 
     button{
-        padding: 10px 20px;
-        background: #4CAF50;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
+        padding:10px 20px;
+        background:#4CAF50;
+        color:white;
+        border:none;
+        border-radius:5px;
+        cursor:pointer;
     }
 
     button:hover{
-        background: #45a049;
+        background:#45a049;
     }
 
     .result{
-        margin-top: 20px;
-        font-size: 20px;
-        font-weight: bold;
-        color: #333;
+        margin-top:20px;
+        font-size:20px;
+        font-weight:bold;
+        color:#333;
     }
+
 </style>
 ```
 
@@ -58,7 +62,7 @@
 
 <h2>Iris Flower Prediction</h2>
 
-<form method="POST">
+<form method="POST" action="/">
 
 <input type="text" name="sepal_length" placeholder="Sepal Length" required>
 
@@ -74,12 +78,10 @@
 
 </form>
 
-{% if prediction %}
+{% if prediction is not none %}
 
 <div class="result">
-
 Prediction: {{ prediction }}
-
 </div>
 
 {% endif %}
