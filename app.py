@@ -7,46 +7,44 @@ import os
 
 app = Flask(__name__)
 
-# Load dataset (for labels only)
+# Load dataset
 iris = load_iris()
 
 # Load trained model
 model = load_model("model.keras")
 
-# IMPORTANT: Scaler must match training
+# Fit scaler
 scaler = StandardScaler()
 scaler.fit(iris.data)
 
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def home():
-    return render_template("index.html")
+    prediction = None
+
+    if request.method == "POST":
+        try:
+            sl = float(request.form['sepal_length'])
+            sw = float(request.form['sepal_width'])
+            pl = float(request.form['petal_length'])
+            pw = float(request.form['petal_width'])
+
+            data = np.array([[sl, sw, pl, pw]])
+            data = scaler.transform(data)
+
+            pred = model.predict(data)
+            predicted_class = np.argmax(pred)
+
+            prediction = iris.target_names[predicted_class]
+
+        except Exception as e:
+            print("Error:", e)
+            prediction = "Invalid Input"
+
+    return render_template("index.html", prediction=prediction)
 
 
-@app.route('/predict', methods=['POST'])
-def predict():
-    try:
-        sl = float(request.form['sl'])
-        sw = float(request.form['sw'])
-        pl = float(request.form['pl'])
-        pw = float(request.form['pw'])
-
-        data = np.array([[sl, sw, pl, pw]])
-        data = scaler.transform(data)
-
-        prediction = model.predict(data, verbose=0)
-        predicted_class = np.argmax(prediction)
-
-        result = iris.target_names[predicted_class]
-
-        return render_template("result.html", prediction=result)
-
-    except Exception as e:
-        print("Error:", e)
-        return render_template("result.html", prediction="Invalid Input")
-
-
-# Only needed for local testing
+# For local testing and deployment
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))  # Render sets $PORT
+    port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=False)
