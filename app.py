@@ -3,55 +3,28 @@ import numpy as np
 from tensorflow.keras.models import load_model
 from sklearn.preprocessing import StandardScaler
 from sklearn.datasets import load_iris
-import os
-
-# Hide TensorFlow logs
-os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 
 app = Flask(__name__)
 
-# Load iris dataset
 iris = load_iris()
 
-# Load trained model
-model = load_model("model.keras")
+model = load_model("iris_model.h5")
 
-# Create and fit scaler
 scaler = StandardScaler()
 scaler.fit(iris.data)
 
-
-@app.route("/", methods=["GET", "POST"])
+@app.route('/')
 def home():
+    return render_template('index.html')
 
-    prediction = None
+@app.route('/predict', methods=['POST'])
+def predict():
+    features = [float(x) for x in request.form.values()]
+    final = scaler.transform([features])
+    prediction = model.predict(final)
+    output = np.argmax(prediction)
 
-    if request.method == "POST":
-        try:
-            sepal_length = float(request.form.get("sepal_length"))
-            sepal_width = float(request.form.get("sepal_width"))
-            petal_length = float(request.form.get("petal_length"))
-            petal_width = float(request.form.get("petal_width"))
-
-            # Prepare input data
-            data = np.array([[sepal_length, sepal_width, petal_length, petal_width]])
-            data = scaler.transform(data)
-
-            # Predict
-            pred = model.predict(data, verbose=0)
-            predicted_class = np.argmax(pred)
-
-            prediction = iris.target_names[predicted_class]
-
-            print("Prediction:", prediction)
-
-        except Exception as e:
-            print("Error:", e)
-            prediction = "Invalid Input"
-
-    return render_template("index.html", prediction=prediction)
-
+    return render_template('index.html', prediction_text="Predicted class: {}".format(output))
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    app.run()
