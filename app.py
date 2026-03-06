@@ -5,8 +5,8 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.datasets import load_iris
 import os
 
-# Hide TensorFlow info logs
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+# Hide TensorFlow logs
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 
 app = Flask(__name__)
 
@@ -16,7 +16,7 @@ iris = load_iris()
 # Load trained model
 model = load_model("model.keras")
 
-# Fit scaler
+# Create and fit scaler
 scaler = StandardScaler()
 scaler.fit(iris.data)
 
@@ -28,20 +28,25 @@ def home():
 
     if request.method == "POST":
         try:
-            sepal_length = float(request.form["sepal_length"])
-            sepal_width = float(request.form["sepal_width"])
-            petal_length = float(request.form["petal_length"])
-            petal_width = float(request.form["petal_width"])
+            sepal_length = float(request.form.get("sepal_length"))
+            sepal_width = float(request.form.get("sepal_width"))
+            petal_length = float(request.form.get("petal_length"))
+            petal_width = float(request.form.get("petal_width"))
 
+            # Prepare input data
             data = np.array([[sepal_length, sepal_width, petal_length, petal_width]])
             data = scaler.transform(data)
 
+            # Predict
             pred = model.predict(data, verbose=0)
             predicted_class = np.argmax(pred)
 
             prediction = iris.target_names[predicted_class]
 
-        except:
+            print("Prediction:", prediction)
+
+        except Exception as e:
+            print("Error:", e)
             prediction = "Invalid Input"
 
     return render_template("index.html", prediction=prediction)
