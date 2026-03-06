@@ -5,9 +5,12 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.datasets import load_iris
 import os
 
+# Hide TensorFlow info logs
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
 app = Flask(__name__)
 
-# Load dataset
+# Load iris dataset
 iris = load_iris()
 
 # Load trained model
@@ -18,33 +21,32 @@ scaler = StandardScaler()
 scaler.fit(iris.data)
 
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route("/", methods=["GET", "POST"])
 def home():
+
     prediction = None
 
     if request.method == "POST":
         try:
-            sl = float(request.form['sepal_length'])
-            sw = float(request.form['sepal_width'])
-            pl = float(request.form['petal_length'])
-            pw = float(request.form['petal_width'])
+            sepal_length = float(request.form["sepal_length"])
+            sepal_width = float(request.form["sepal_width"])
+            petal_length = float(request.form["petal_length"])
+            petal_width = float(request.form["petal_width"])
 
-            data = np.array([[sl, sw, pl, pw]])
+            data = np.array([[sepal_length, sepal_width, petal_length, petal_width]])
             data = scaler.transform(data)
 
-            pred = model.predict(data)
+            pred = model.predict(data, verbose=0)
             predicted_class = np.argmax(pred)
 
             prediction = iris.target_names[predicted_class]
 
-        except Exception as e:
-            print("Error:", e)
+        except:
             prediction = "Invalid Input"
 
     return render_template("index.html", prediction=prediction)
 
 
-# For local testing and deployment
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=False)
+    app.run(host="0.0.0.0", port=port)
