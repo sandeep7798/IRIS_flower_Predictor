@@ -1,26 +1,9 @@
-# Virtual Environment
-
-Include/
+.venv/
+venv/
 Lib/
 Scripts/
+Include/
+share/
 pyvenv.cfg
-
-# Python cache files
-
-**pycache**/
-*.py[cod]
-*$py.class
-
-# Distribution / packaging
-
-build/
-dist/
-*.egg-info/
-
-# VS Code
-
-.vscode/
-
-# Environment variables
-
-.env
+__pycache__/
+*.pyc

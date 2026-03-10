@@ -1,8 +1,5 @@
-numpy
-pandas
-matplotlib
-tensorflow
-flask
-scikit-learn
-joblib
+tensorflow==2.15.0
+keras==2.15.0
 gunicorn
+flask
+numpy
