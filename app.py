@@ -25,9 +25,8 @@ def predict():
         features = np.array([[f1, f2, f3, f4]])
 
         # Prediction
-        prediction = model.predict(features)
-
-        result = prediction[0][0]
+       prediction = model.predict(features)
+       result = np.argmax(prediction)
 
         return render_template("index.html", prediction_text=f"Prediction Result: {result}")
 
