@@ -3,7 +3,7 @@ import numpy as np
 import os
 from tensorflow.keras.models import load_model
 
-# Hide TensorFlow logs
+# Hide TensorFlow warnings
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 
 app = Flask(__name__)
@@ -32,10 +32,10 @@ def predict():
         # Convert input to numpy array
         input_data = np.array([[sepal_length, sepal_width, petal_length, petal_width]])
 
-        # Model prediction
+        # Make prediction
         prediction = model.predict(input_data)
 
-        # Get predicted class
+        # Get predicted class index
         predicted_index = np.argmax(prediction)
 
         # Get flower name
@@ -43,7 +43,7 @@ def predict():
 
         return render_template(
             "index.html",
-            prediction_text=f"Predicted Iris Flower is: {result}"
+            prediction_text=f"Predicted Iris Flower: {result}"
         )
 
     except Exception as e:
@@ -53,7 +53,7 @@ def predict():
         )
 
 
-# For Render deployment
+# Run Flask app
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
